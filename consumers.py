@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Consumer:
+class Consumer(ABC):
     def __init__(self):
         super().__init__()
 

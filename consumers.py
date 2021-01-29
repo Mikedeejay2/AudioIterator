@@ -18,12 +18,18 @@ class PrintDirConsumer(Consumer):
 
 
 class AmplifyConsumer(Consumer):
-    def __init__(self):
+    def __init__(self, amplifier=0):
         super().__init__()
-        self.number = 0
+        self.amplifier = 0
 
-    def consume(self, path=""):
+    def consume(self, path=''):
+        snd_format = ''
+        sound: AudioSegment
         if path.endswith(".ogg"):
+            snd_format = 'ogg'
             print(path)
-            loop = AudioSegment.from_ogg(path)
-            play(loop)
+            sound = AudioSegment.from_ogg(path)
+        if snd_format == '':
+            return
+        sound = sound + self.amplifier
+        sound.export(path, format=snd_format)

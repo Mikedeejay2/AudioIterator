@@ -25,7 +25,7 @@ class AmplifyConsumer(Consumer):
     def consume(self, path=''):
         snd_format = ''
         sound: AudioSegment
-        if path.endswith(".ogg"):
+        if path.endswith('.ogg'):
             snd_format = 'ogg'
             sound = AudioSegment.from_ogg(path)
         if snd_format == '':
@@ -33,3 +33,17 @@ class AmplifyConsumer(Consumer):
         print(path)
         amplified_sound = sound + self.amplifier
         amplified_sound.export(path, format=snd_format)
+
+
+class ReverseConsumer(Consumer):
+    def consume(self, path=''):
+        snd_format = ''
+        sound: AudioSegment
+        if path.endswith('.ogg'):
+            snd_format = 'ogg'
+            sound = AudioSegment.from_ogg(path)
+        if snd_format == '':
+            return
+        print(path)
+        reversed_sound = sound.reverse()
+        reversed_sound.export(path, format=snd_format)

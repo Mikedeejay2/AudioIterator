@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pydub import AudioSegment
+import util
 from pydub.playback import play
 
 
@@ -23,27 +24,32 @@ class AmplifyConsumer(Consumer):
         self.amplifier = amplifier
 
     def consume(self, path=''):
-        snd_format = ''
-        sound: AudioSegment
-        if path.endswith('.ogg'):
-            snd_format = 'ogg'
-            sound = AudioSegment.from_ogg(path)
-        if snd_format == '':
-            return
-        print(path)
+        sound = util.get_sound(path)
         amplified_sound = sound + self.amplifier
-        amplified_sound.export(path, format=snd_format)
+        util.export(amplified_sound, path)
 
 
 class ReverseConsumer(Consumer):
     def consume(self, path=''):
-        snd_format = ''
-        sound: AudioSegment
-        if path.endswith('.ogg'):
-            snd_format = 'ogg'
-            sound = AudioSegment.from_ogg(path)
-        if snd_format == '':
-            return
-        print(path)
+        sound = util.get_sound(path)
         reversed_sound = sound.reverse()
-        reversed_sound.export(path, format=snd_format)
+        util.export(reversed_sound, path)
+
+
+class AppendRandom(Consumer):
+    def __init__(self, other_path='', volume=0, position=0):
+        super().__init__()
+        self.other_path = other_path
+        self.volume = volume
+        self.position = position
+
+    def consume(self, path=''):
+        sound = util.get_sound(path)
+        sound2 = util.get_random_sound(self.other_path)
+        sound2 = sound2 + self.volume
+        added_sound: AudioSegment
+        if sound.duration_seconds > sound2.duration_seconds:
+            added_sound = sound.overlay(sound2, position=self.position)
+        else:
+            added_sound = sound2.overlay(sound, position=self.position)
+        util.export(added_sound, path)

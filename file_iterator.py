@@ -1,5 +1,7 @@
 import os
 
+import util
+
 
 class FileIterator:
     def __init__(self, path, consumer):
@@ -9,4 +11,7 @@ class FileIterator:
     def iterate_all(self):
         for root, dirs, files in os.walk(self.path):
             for name in files:
-                self.consumer.consume(os.path.join(root, name))
+                path = os.path.join(root, name)
+                if util.get_snd_format(path) is None:
+                    continue
+                self.consumer.consume(path)

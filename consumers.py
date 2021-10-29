@@ -53,3 +53,10 @@ class AppendRandom(Consumer):
         else:
             added_sound = sound2.overlay(sound, position=self.position)
         util.export(added_sound, path)
+
+
+class MonoConsumer(Consumer):
+    def consume(self, path=''):
+        sound = util.get_sound(path)
+        mono_sound = sound.set_channels(1)
+        util.export(mono_sound, path)
